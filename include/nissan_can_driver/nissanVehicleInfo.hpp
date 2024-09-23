@@ -29,7 +29,7 @@ private:
 
     NissanCanDefinitions m_nissanCanDefinitions;
 
-    uint8_t m_vehicleDirection{0};
+    int8_t m_vehicleDirection{0};
 };
 
 } // namespace vil
