@@ -3,10 +3,24 @@
 
 crp::vil::NissanVehicleControl::NissanVehicleControl() : Node("nissan_vehicle_control")
 {
-    m_sub_cmdSpeed_ = this->create_subscription<std_msgs::msg::Float32>(
-        "speed_cmd", 10, std::bind(&NissanVehicleControl::cmdSpeedCallback, this, std::placeholders::_1));
-    m_sub_cmdSteering_ = this->create_subscription<std_msgs::msg::Float32>(
-        "steering_cmd", 10, std::bind(&NissanVehicleControl::cmdSteeringCallback, this, std::placeholders::_1));
+    bool isAutowareControlInput;
+    this->declare_parameter<bool>("autoware_control_input", true);
+    this->get_parameter<bool>("autoware_control_input", isAutowareControlInput);
+    
+    if (isAutowareControlInput)
+    {
+        RCLCPP_INFO(this->get_logger(), "Using autoware_control_input");
+        sub_cmdControl_ = this->create_subscription<autoware_control_msgs::msg::Control>(
+            "control_cmd", 10, std::bind(&NissanVehicleControl::cmdControlCallback, this, std::placeholders::_1));
+    }
+    else
+    {
+        RCLCPP_INFO(this->get_logger(), "Using speed_cmd and steering_cmd");
+        sub_cmdSpeed_ = this->create_subscription<std_msgs::msg::Float32>(
+            "speed_cmd", 10, std::bind(&NissanVehicleControl::cmdSpeedCallback, this, std::placeholders::_1));
+        sub_cmdSteering_ = this->create_subscription<std_msgs::msg::Float32>(
+            "steering_cmd", 10, std::bind(&NissanVehicleControl::cmdSteeringCallback, this, std::placeholders::_1));
+    }
 
     m_pub_can_ = this->create_publisher<can_msgs::msg::Frame>("can_rx", 10);
 
@@ -23,6 +37,13 @@ void crp::vil::NissanVehicleControl::cmdSpeedCallback(const std_msgs::msg::Float
 void crp::vil::NissanVehicleControl::cmdSteeringCallback(const std_msgs::msg::Float32::SharedPtr msg)
 {
     m_vehicleSteering = msg->data;
+}
+
+
+void crp::vil::NissanVehicleControl::cmdControlCallback(const autoware_control_msgs::msg::Control::SharedPtr msg)
+{
+    m_vehicleSpeed = msg->longitudinal.velocity;
+    m_vehicleSteering = msg->lateral.steering_tire_angle;
 }
 
 

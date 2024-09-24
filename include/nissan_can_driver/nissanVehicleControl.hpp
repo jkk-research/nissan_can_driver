@@ -4,6 +4,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <can_msgs/msg/frame.hpp>
 #include <std_msgs/msg/float32.hpp>
+#include <autoware_control_msgs/msg/control.hpp>
 
 #include "nissan_can_driver/nissanCanDefinitions.hpp"
 
@@ -20,10 +21,12 @@ public:
 private:
     void cmdSpeedCallback(const std_msgs::msg::Float32::SharedPtr msg);
     void cmdSteeringCallback(const std_msgs::msg::Float32::SharedPtr msg);
+    void cmdControlCallback(const autoware_control_msgs::msg::Control::SharedPtr msg);
     void timerCallback();
 
-    rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr m_sub_cmdSpeed_;
-    rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr m_sub_cmdSteering_;
+    rclcpp::Subscription<autoware_control_msgs::msg::Control>::SharedPtr sub_cmdControl_;
+    rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr sub_cmdSpeed_;
+    rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr sub_cmdSteering_;
 
     rclcpp::Publisher<can_msgs::msg::Frame>::SharedPtr m_pub_can_;
 
