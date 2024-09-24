@@ -12,7 +12,7 @@ can_msgs::msg::Frame crp::vil::NissanCanDefinitions::encodeHlcAutonomous(const f
 
     int16_t tireAngle_deg = static_cast<int16_t>(-tireAngle * 180.0 / 3.14 * 100); // to deg, scale
 
-    frame.data[0] = 0x00;
+    frame.data[0] = 0x01;
     frame.data[1] = uint8_t(speed * 3.6); // to km/h
     frame.data[2] = tireAngle_deg >> 8;
     frame.data[3] = tireAngle_deg & 0xFF;
