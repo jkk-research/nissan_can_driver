@@ -9,6 +9,11 @@ def generate_launch_description():
         default_value='true',
         description='Enable this argument to use the Autoware control input topics')
     
+    kvaser_hardware_id_arg = DeclareLaunchArgument(
+        'kvaser_hardware_id',
+        default_value='11162',
+        description='Kvaser hardware ID')
+    
     kvaser_bridge_info = Node(
         package='kvaser_interface',
         executable='kvaser_can_bridge',
@@ -17,7 +22,7 @@ def generate_launch_description():
         output='screen',
         parameters=[
             {
-                'hardware_id': 11162,
+                'hardware_id': LaunchConfiguration('kvaser_hardware_id'),
                 'circuit_id':  0,
                 'bit_rate':    500000
             }
@@ -32,7 +37,7 @@ def generate_launch_description():
         output='screen',
         parameters=[
             {
-                'hardware_id': 11162,
+                'hardware_id': LaunchConfiguration('kvaser_hardware_id'),
                 'circuit_id':  1,
                 'bit_rate':    500000
             }
@@ -58,9 +63,10 @@ def generate_launch_description():
 
     return LaunchDescription([
         autoware_control_input_arg,
+        kvaser_hardware_id_arg,
 
-        # kvaser_bridge_info,
-        # kvaser_bridge_control,
+        kvaser_bridge_info,
+        kvaser_bridge_control,
         nissan_vehicle_info,
         nissan_vehicle_control
     ])
