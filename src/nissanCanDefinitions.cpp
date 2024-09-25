@@ -45,14 +45,14 @@ float crp::vil::NissanCanDefinitions::decodeVehicleSpeed(const can_msgs::msg::Fr
 {
     double measured_speed =
         ((double)((frame.data[0] << 8) | frame.data[1])) * 1.0/8.570637;
-    return measured_speed * 1.0/3.6 * -1; // to m/s, right is negative
+    return measured_speed * 1.0/3.6; // to m/s
 }
 
 
 float crp::vil::NissanCanDefinitions::decodeVehicleSteering(const can_msgs::msg::Frame &frame)
 {
     float raw_steer_ang = ((int16_t)((frame.data[1] << 8) | frame.data[0])) / 10.0;
-    return raw_steer_ang * 3.14 / 180.0; // to rad
+    return raw_steer_ang * 3.14 / 180.0 * -1; // to rad, right is negative
 }
 
 
