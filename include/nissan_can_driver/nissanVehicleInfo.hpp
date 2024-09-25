@@ -26,10 +26,14 @@ private:
     rclcpp::Subscription<can_msgs::msg::Frame>::SharedPtr m_sub_can_;
 
     void canCallback(const can_msgs::msg::Frame::SharedPtr msg);
+    void timerCallback();
 
     NissanCanDefinitions m_nissanCanDefinitions;
+    rclcpp::TimerBase::SharedPtr m_timer_;
 
     int8_t m_vehicleDirection{0};
+    float m_vehicleSpeed{0.0f};
+    float m_vehicleSteering{0.0f};
 };
 
 } // namespace vil

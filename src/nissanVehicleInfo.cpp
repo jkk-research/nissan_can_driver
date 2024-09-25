@@ -8,6 +8,29 @@ crp::vil::NissanVehicleInfo::NissanVehicleInfo() : Node("nissan_vehicle_info")
 
     m_sub_can_ = this->create_subscription<can_msgs::msg::Frame>(
         "can_tx", 10, std::bind(&NissanVehicleInfo::canCallback, this, std::placeholders::_1));
+    
+    m_timer_ = this->create_wall_timer(
+        std::chrono::milliseconds(50), 
+        std::bind(&NissanVehicleInfo::timerCallback, this));
+}
+
+
+void crp::vil::NissanVehicleInfo::timerCallback()
+{
+    // Publish vehicle speed
+    std_msgs::msg::Float32 vehicleSpeed;
+    vehicleSpeed.data = m_vehicleSpeed;
+    m_pub_vehicleSpeed_->publish(vehicleSpeed);
+
+    // Publish vehicle steering
+    std_msgs::msg::Float32 vehicleSteering;
+    vehicleSteering.data = m_vehicleSteering;
+    m_pub_vehicleSteering_->publish(vehicleSteering);
+
+    // Publish vehicle tire angle
+    std_msgs::msg::Float32 tireAngle;
+    tireAngle.data = m_vehicleSteering * 0.0547944; // to tire angle
+    m_pub_vehicleTireAngle_->publish(tireAngle);
 }
 
 
@@ -15,20 +38,11 @@ void crp::vil::NissanVehicleInfo::canCallback(const can_msgs::msg::Frame::Shared
 {
     if (msg->id == m_nissanCanDefinitions.m_VEHICLE_SPEED_ID)
     {
-        std_msgs::msg::Float32 vehicleSpeed;
-        vehicleSpeed.data = m_nissanCanDefinitions.decodeVehicleSpeed(*msg) * m_vehicleDirection;
-        m_pub_vehicleSpeed_->publish(vehicleSpeed);
+        m_vehicleSpeed = m_nissanCanDefinitions.decodeVehicleSpeed(*msg) * m_vehicleDirection;
     }
     else if (msg->id == m_nissanCanDefinitions.m_VEHICLE_STEERING_ID)
     {
-        std_msgs::msg::Float32 vehicleSteering;
-        vehicleSteering.data = m_nissanCanDefinitions.decodeVehicleSteering(*msg);
-        m_pub_vehicleSteering_->publish(vehicleSteering);
-
-        std_msgs::msg::Float32 tireAngle;
-        tireAngle.data = vehicleSteering.data * 0.0547944; // to tire angle
-        m_pub_vehicleTireAngle_->publish(tireAngle);
-        
+        m_vehicleSteering = m_nissanCanDefinitions.decodeVehicleSteering(*msg);
     }
     else if (msg->id == m_nissanCanDefinitions.m_VEHICLE_SHIFTER_ID)
     {
