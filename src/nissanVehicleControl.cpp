@@ -31,12 +31,14 @@ crp::vil::NissanVehicleControl::NissanVehicleControl() : Node("nissan_vehicle_co
 void crp::vil::NissanVehicleControl::cmdSpeedCallback(const std_msgs::msg::Float32::SharedPtr msg)
 {
     m_vehicleSpeed = msg->data;
+    m_lastVehicleSpeedTime = this->now().seconds();
 }
 
 
 void crp::vil::NissanVehicleControl::cmdSteeringCallback(const std_msgs::msg::Float32::SharedPtr msg)
 {
     m_vehicleSteering = msg->data;
+    m_lastVehicleSteeringTime = this->now().seconds();
 }
 
 
@@ -44,11 +46,25 @@ void crp::vil::NissanVehicleControl::cmdControlCallback(const autoware_control_m
 {
     m_vehicleSpeed = msg->longitudinal.velocity;
     m_vehicleSteering = msg->lateral.steering_tire_angle;
+
+    m_lastVehicleSpeedTime = this->now().seconds();
+    m_lastVehicleSteeringTime = this->now().seconds();
 }
 
 
 void crp::vil::NissanVehicleControl::timerCallback()
 {
+    if (this->now().seconds() - m_lastVehicleSpeedTime > 0.2)
+    {
+        RCLCPP_WARN(this->get_logger(), "No speed command received for 200 ms! Control is disabled.");
+        return;
+    }
+    if (this->now().seconds() - m_lastVehicleSteeringTime > 0.2)
+    {
+        RCLCPP_WARN(this->get_logger(), "No steering command received for 200 ms! Control is disabled.");
+        return;
+    }
+
     can_msgs::msg::Frame frameSpeedRef    = m_nissanCanDefinitions.encodeHlcSpeedRefKmph(m_vehicleSpeed);
     can_msgs::msg::Frame frameHlcAutonom = m_nissanCanDefinitions.encodeHlcAutonomous(m_vehicleSpeed, m_vehicleSteering);
 
