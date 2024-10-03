@@ -56,12 +56,12 @@ void crp::vil::NissanVehicleControl::timerCallback()
 {
     if (this->now().seconds() - m_lastVehicleSpeedTime > 0.2)
     {
-        RCLCPP_WARN(this->get_logger(), "No speed command received for 200 ms! Control is disabled.");
+        RCLCPP_WARN(this->get_logger(), "No speed command received for more than 200 ms! Control is disabled.");
         return;
     }
     if (this->now().seconds() - m_lastVehicleSteeringTime > 0.2)
     {
-        RCLCPP_WARN(this->get_logger(), "No steering command received for 200 ms! Control is disabled.");
+        RCLCPP_WARN(this->get_logger(), "No steering command received for more than 200 ms! Control is disabled.");
         return;
     }
 

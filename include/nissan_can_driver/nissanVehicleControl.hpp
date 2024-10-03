@@ -35,8 +35,8 @@ private:
     crp::vil::NissanCanDefinitions m_nissanCanDefinitions;
     float m_vehicleSpeed{0.0};
     float m_vehicleSteering{0.0};
-    float m_lastVehicleSpeedTime{0.0};
-    float m_lastVehicleSteeringTime{0.0};
+    double m_lastVehicleSpeedTime{0.0};
+    double m_lastVehicleSteeringTime{0.0};
 };
 
 } // namespace vil
