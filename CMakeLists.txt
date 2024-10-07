@@ -11,11 +11,12 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(can_msgs REQUIRED)
 find_package(autoware_control_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
 
 include_directories(include)
 
 add_executable(nissan_vehicle_info src/nissanVehicleInfo.cpp src/nissanCanDefinitions.cpp)
-ament_target_dependencies(nissan_vehicle_info rclcpp std_msgs can_msgs)
+ament_target_dependencies(nissan_vehicle_info rclcpp std_msgs can_msgs geometry_msgs)
 
 add_executable(nissan_vehicle_control src/nissanVehicleControl.cpp src/nissanCanDefinitions.cpp)
 ament_target_dependencies(nissan_vehicle_control rclcpp std_msgs can_msgs autoware_control_msgs)

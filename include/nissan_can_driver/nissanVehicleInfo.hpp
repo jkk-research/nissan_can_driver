@@ -4,6 +4,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <can_msgs/msg/frame.hpp>
 #include <std_msgs/msg/float32.hpp>
+#include <geometry_msgs/msg/twist.hpp>
 
 #include "nissan_can_driver/nissanCanDefinitions.hpp"
 
@@ -19,9 +20,10 @@ public:
     NissanVehicleInfo();
 
 private:
-    rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr m_pub_vehicleSpeed_;
-    rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr m_pub_vehicleSteering_;
-    rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr m_pub_vehicleTireAngle_;
+    rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr    m_pub_vehicleSpeed_;
+    rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr    m_pub_vehicleSteering_;
+    rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr    m_pub_vehicleTireAngle_;
+    rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr m_pub_vehicleTwist_;
 
     rclcpp::Subscription<can_msgs::msg::Frame>::SharedPtr m_sub_can_;
 

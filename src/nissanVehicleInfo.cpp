@@ -5,6 +5,7 @@ crp::vil::NissanVehicleInfo::NissanVehicleInfo() : Node("nissan_vehicle_info")
     m_pub_vehicleSpeed_     = this->create_publisher<std_msgs::msg::Float32>("vehicle_speed", 10);
     m_pub_vehicleSteering_  = this->create_publisher<std_msgs::msg::Float32>("vehicle_steering", 10);
     m_pub_vehicleTireAngle_ = this->create_publisher<std_msgs::msg::Float32>("vehicle_tire_angle", 10);
+    m_pub_vehicleTwist_     = this->create_publisher<geometry_msgs::msg::Twist>("/sensing/vehicle/twist", 10);
 
     m_sub_can_ = this->create_subscription<can_msgs::msg::Frame>(
         "can_tx", 10, std::bind(&NissanVehicleInfo::canCallback, this, std::placeholders::_1));
@@ -31,6 +32,12 @@ void crp::vil::NissanVehicleInfo::timerCallback()
     std_msgs::msg::Float32 tireAngle;
     tireAngle.data = m_vehicleSteering * 0.0547944; // to tire angle
     m_pub_vehicleTireAngle_->publish(tireAngle);
+
+    // Publish twist
+    geometry_msgs::msg::Twist vehicleTwist;
+    vehicleTwist.linear.x  = m_vehicleSpeed;
+    vehicleTwist.angular.z = (m_vehicleSpeed * tan(tireAngle.data)) / 2700.0;
+    m_pub_vehicleTwist_->publish(vehicleTwist);
 }
 
 

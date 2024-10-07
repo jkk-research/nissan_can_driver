@@ -13,6 +13,7 @@
   <depend>std_msgs</depend>
   <depend>can_msgs</depend>
   <depend>autoware_control_msgs</depend>
+  <depend>geometry_msgs</depend>
   <depend>kvaser_interface</depend>
 
   <test_depend>ament_lint_auto</test_depend>
